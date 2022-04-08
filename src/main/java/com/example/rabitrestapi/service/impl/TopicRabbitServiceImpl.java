@@ -52,11 +52,40 @@ public class TopicRabbitServiceImpl implements TopicRabbitService {
 
             rabbitAdmin.declareQueue(queue);
             rabbitAdmin.declareBinding(binding);
+            this.addQueueToListener(rabbitMqConfig.defaultExchange().getName(),queueName);
 
             return " a new Queue was created with name '" + queueName + "'";
         } catch (Exception e) {
             return "Something went wrong:" + e.getMessage();
         }
+    }
+
+    public void addQueueToListener(String exchangeName,String queueName) {
+        if (!checkQueueExistOnListener(exchangeName,queueName)) {
+            this.getMessageListenerContainerById(exchangeName).addQueueNames(queueName);
+        }
+    }
+
+    public Boolean checkQueueExistOnListener(String exchangeName, String queueName) {
+        try {
+            String[] queueNames = this.getMessageListenerContainerById(exchangeName).getQueueNames();
+            if (queueNames.length > 0) {
+                for (String name : queueNames) {
+                    if (name.equals(queueName)) {
+                        return Boolean.TRUE;
+                    }
+                }
+            }
+            return Boolean.FALSE;
+        } catch (Exception e) {
+            return Boolean.FALSE;
+        }
+    }
+
+    public AbstractMessageListenerContainer getMessageListenerContainerById(String exchangeName) {
+        return (
+                (AbstractMessageListenerContainer) this.rabbitListenerEndpointRegistry.getListenerContainer(exchangeName)
+        );
     }
 
     public String sendTopicMessage(String routingKey, String message) {
