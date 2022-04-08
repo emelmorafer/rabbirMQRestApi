@@ -46,5 +46,12 @@ public class TopicRabbitController {
         return topicRabbitService.sendHeaderMessage(message,properties);
     }
 
+    @PostMapping(value = "/sendMessageAllQueues")
+    public String sendMessage(
+            @RequestParam(value = "message") String message) {
+
+        return topicRabbitService.sendMessageAllQueues(message);
+    }
+
 
 }

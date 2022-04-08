@@ -43,4 +43,16 @@ public class RabbitMqSender {
         log.info("message sent to rabbit queue");
     }
 
+    public void sendToAllRabbitQueues(String message, String[] queueNames) {
+        log.info("sending message : {}",message);
+        for (String queueName : queueNames) {
+            MessageProperties props = MessagePropertiesBuilder.newInstance().setContentType(MessageProperties.CONTENT_TYPE_JSON).build();
+            props.setHeader("queuename", queueName);
+
+            Message msg = new Message(message.getBytes(), props);
+            this.rabbitTemplate.send(this.rabbitMqConfigModel.getHeaderExchange(), new String(), msg);
+        }
+        log.info("message sent to rabbit queue");
+    }
+
 }

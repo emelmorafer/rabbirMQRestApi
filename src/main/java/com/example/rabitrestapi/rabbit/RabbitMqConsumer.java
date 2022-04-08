@@ -18,7 +18,7 @@ public class RabbitMqConsumer {
     }
 
     @RabbitListener(id = "${props.rabbitmq.headerExchange}",concurrency = "2")
-    public void receiverHeader(Message message) {
+    public void receiver2(Message message) {
 
         Map<String, Object> headers = message.getMessageProperties().getHeaders();
 

@@ -13,4 +13,6 @@ public interface TopicRabbitService {
 
     String sendHeaderMessage(String message, Map<String, Object> properties);
 
+    String sendMessageAllQueues(String message);
+
 }

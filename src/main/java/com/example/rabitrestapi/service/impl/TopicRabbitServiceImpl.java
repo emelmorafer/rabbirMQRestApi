@@ -124,4 +124,14 @@ public class TopicRabbitServiceImpl implements TopicRabbitService {
         }
     }
 
+    public String sendMessageAllQueues(String message) {
+        try {
+            String[] queueNames = this.getMessageListenerContainerById(rabbitMqConfig.defaultHeaderExchange().getName()).getQueueNames();
+            rabbitMqSender.sendToAllRabbitQueues(message, queueNames);
+            return " a new Message was send '" + message + "'";
+        } catch (Exception e) {
+            return "Something went wrong:" + e.getMessage();
+        }
+    }
+
 }
