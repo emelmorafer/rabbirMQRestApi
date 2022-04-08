@@ -70,6 +70,7 @@ public class TopicRabbitServiceImpl implements TopicRabbitService {
 
             rabbitAdmin.declareQueue(queue);
             rabbitAdmin.declareBinding(binding);
+            this.addQueueToListener(rabbitMqConfig.defaultHeaderExchange().getName(),queueName);
 
             return " a new Queue was created with name '" + queueName + "'";
         } catch (Exception e) {
