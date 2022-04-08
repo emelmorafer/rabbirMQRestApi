@@ -12,4 +12,5 @@ props:
   rabbitmq:
     routing-key: default-routing-key
     exchange: default-exchage
+    headerExchange: default-header-exchage
     queue: default-queue

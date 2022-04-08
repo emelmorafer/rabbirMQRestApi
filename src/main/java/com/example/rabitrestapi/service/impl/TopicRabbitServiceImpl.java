@@ -2,7 +2,6 @@ package com.example.rabitrestapi.service.impl;
 
 
 import com.example.rabitrestapi.configuration.RabbitMqConfig;
-import com.example.rabitrestapi.configuration.model.RabbitMqConfigModel;
 import com.example.rabitrestapi.rabbit.RabbitMqSender;
 import com.example.rabitrestapi.service.TopicRabbitService;
 import org.apache.logging.log4j.LogManager;
@@ -60,6 +59,24 @@ public class TopicRabbitServiceImpl implements TopicRabbitService {
         }
     }
 
+    public String createHeaderQueue(String queueName) {
+        try {
+            Queue queue = new Queue(queueName, true, false, false);
+
+            Map<String, Object> properties = new HashMap<>();
+            properties.put("queuename", queueName);
+
+            Binding binding = BindingBuilder.bind(queue).to(rabbitMqConfig.defaultHeaderExchange()).whereAny(properties).match();
+
+            rabbitAdmin.declareQueue(queue);
+            rabbitAdmin.declareBinding(binding);
+
+            return " a new Queue was created with name '" + queueName + "'";
+        } catch (Exception e) {
+            return "Something went wrong:" + e.getMessage();
+        }
+    }
+
     public void addQueueToListener(String exchangeName,String queueName) {
         if (!checkQueueExistOnListener(exchangeName,queueName)) {
             this.getMessageListenerContainerById(exchangeName).addQueueNames(queueName);
@@ -92,6 +109,15 @@ public class TopicRabbitServiceImpl implements TopicRabbitService {
         try {
             rabbitMqSender.sendToRabbitWithRoutingKey(routingKey,message);
             return " a new Message was send '" + message + "' with routingKey '" + routingKey + "'";
+        } catch (Exception e) {
+            return "Something went wrong:" + e.getMessage();
+        }
+    }
+
+    public String sendHeaderMessage(String message, Map<String, Object> properties) {
+        try {
+            rabbitMqSender.sendToRabbitWithHeader(message, properties);
+            return " a new Message was send '" + message + "'";
         } catch (Exception e) {
             return "Something went wrong:" + e.getMessage();
         }

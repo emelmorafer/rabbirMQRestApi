@@ -16,8 +16,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 public class RabbitMqConfig implements RabbitListenerConfigurer {
@@ -38,6 +36,11 @@ public class RabbitMqConfig implements RabbitListenerConfigurer {
     @Bean
     public TopicExchange defaultExchange() {
         return new TopicExchange(this.rabbitMqConfigModel.getExchange());
+    }
+
+    @Bean
+    public HeadersExchange defaultHeaderExchange() {
+        return new HeadersExchange(this.rabbitMqConfigModel.getHeaderExchange());
     }
 
     @Bean

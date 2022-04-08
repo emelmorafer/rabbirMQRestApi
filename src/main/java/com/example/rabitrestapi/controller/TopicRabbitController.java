@@ -4,7 +4,6 @@ import com.example.rabitrestapi.service.TopicRabbitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -24,12 +23,27 @@ public class TopicRabbitController {
         return topicRabbitService.createQueue(routingKey,queueName);
     }
 
+    @PostMapping(value = "/createHeaderQueue")
+    public String createHeaderQueue(
+            @RequestParam(value = "queueName") String queueName) {
+
+        return topicRabbitService.createHeaderQueue(queueName);
+    }
+
     @PostMapping(value = "/sendTopicMessage")
     public String sendTopicMessage(
             @RequestParam(value = "routingKey") String routingKey,
             @RequestParam(value = "message") String message) {
 
         return topicRabbitService.sendTopicMessage(routingKey, message);
+    }
+
+    @PostMapping(value = "/sendMessageHeader")
+    public String sendMessage(
+            @RequestHeader Map<String, Object> properties,
+            @RequestParam(value = "message") String message) {
+
+        return topicRabbitService.sendHeaderMessage(message,properties);
     }
 
 

@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMqConfigModel {
     @Value("${props.rabbitmq.exchange}")
     private String exchange;
+    @Value("${props.rabbitmq.headerExchange}")
+    private String headerExchange;
     @Value("${props.rabbitmq.queue}")
     private String queue;
     @Value("${props.rabbitmq.routing-key}")

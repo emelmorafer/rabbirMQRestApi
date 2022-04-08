@@ -9,7 +9,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -28,6 +27,19 @@ public class RabbitMqSender {
 
         this.rabbitTemplate.convertAndSend(this.rabbitMqConfigModel.getExchange(),routingKey,message);
         //this.rabbitTemplate.send(this.rabbitMqConfigModel.getExchange(), routingKey, new Message(message.getBytes("UTF-8"),null));
+        log.info("message sent to rabbit queue");
+    }
+
+    public void sendToRabbitWithHeader(String message, Map<String, Object> properties) throws UnsupportedEncodingException {
+        log.info("sending message : {}",message);
+
+        MessageProperties props = MessagePropertiesBuilder.newInstance().setContentType(MessageProperties.CONTENT_TYPE_JSON).build();
+        String prop = properties.get("queuename").toString();
+        props.setHeader("queuename", prop);
+
+        Message msg = new Message(message.getBytes(), props);
+
+        this.rabbitTemplate.send(this.rabbitMqConfigModel.getHeaderExchange(), new String(), msg);
         log.info("message sent to rabbit queue");
     }
 
